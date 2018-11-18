@@ -10,6 +10,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from imblearn.over_sampling import SMOTE
+
+
 import seaborn as sns
 from statsmodels.graphics.mosaicplot import mosaic
 
@@ -156,7 +159,6 @@ a = ohe.get_feature_names()
 cat_col_names = a.tolist()
 
 
-
 ncol_name = cat_col_names + ["age","education","duration","campaign","pdays","previous","emp.var.rate","cons.price.idx", "cons.conf.idx", "euribor3m", "nr.employed", "y"] 
 bank_data_final = pd.DataFrame(data=X_cat_transformed[:,:],columns=ncol_name)
 
@@ -180,7 +182,7 @@ bank_data_final.drop(['x0_unemployed','x1_single','x2_no','x3_no','x4_no','x5_te
 X = bank_data_final.iloc[:, 0:42].values
 y = bank_data_final.iloc[:, 42].values
 
-#drop duration
+# drop duration
 X = np.delete(X, [33], axis=1)
 
 # Splitting the dataset into the Training set and Test set
@@ -192,6 +194,24 @@ from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train[:, np.r_[31, 33:41]] = sc.fit_transform(X_train[:, np.r_[31, 33:41]])
 X_test[:, np.r_[31, 33:41]] = sc.transform(X_test[:, np.r_[31, 33:41]])
+
+# Solving imbalance output problem(accuracy paradox) by oversampling
+print("Number transactions X_train dataset: ", X_train.shape)
+print("Number transactions y_train dataset: ", y_train.shape)
+print("Number transactions X_test dataset: ", X_test.shape)
+print("Number transactions y_test dataset: ", y_test.shape)
+
+print("Before OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
+print("Before OverSampling, counts of label '0': {} \n".format(sum(y_train == 0)))
+
+sm = SMOTE(random_state=2)
+X_train, y_train = sm.fit_sample(X_train, y_train.ravel())
+
+print('After OverSampling, the shape of train_X: {}'.format(X_train.shape))
+print('After OverSampling, the shape of train_y: {} \n'.format(y_train.shape))
+
+print("After OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
+print("After OverSampling, counts of label '0': {}".format(sum(y_train == 0)))
 
 
 # Applying PCA
@@ -224,8 +244,6 @@ y_pred = classifier.predict(X_test)
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
-
-
 
 
 # Visualising the Training set results
