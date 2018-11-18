@@ -11,6 +11,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from imblearn.over_sampling import SMOTE
+
+
 import seaborn as sns
 from statsmodels.graphics.mosaicplot import mosaic
 
@@ -22,12 +25,12 @@ bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter
 #%%
 # Drop rows if these 5 columns contains unknown job	marital	education
 # default(has credit in default?)	housing(has housing loan?)	loan(has personal loan?)
-bank_data = bank_data[(bank_data['job'] != 'unknown') 
-                      & (bank_data['marital'] != 'unknown') 
+bank_data = bank_data[(bank_data['job'] != 'unknown')
+                      & (bank_data['marital'] != 'unknown')
                       & (bank_data['education'] != 'unknown')
                       & (bank_data['default'] != 'unknown')
                       & (bank_data['housing'] != 'unknown')
-                      & (bank_data['loan'] != 'unknown')] 
+                      & (bank_data['loan'] != 'unknown')]
 
 # bank_data.to_csv('bank-additional-full(without_Unknown).csv')
 
@@ -133,17 +136,18 @@ plt.subplots_adjust(top=0.9)
 g.fig.suptitle('Pair plot of emp.var.rate, cons.price.idx, cons.conf.idx, euribor3m, nr.employed')
 
 
-# Data Preprocessing-----------------
+# Data Preprocessing(categorical, binary, ordinal encoding)-----------------
 
-#%%
-# Label encoding Ordinal feature -- education
-edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y', 
+
+# Ordinal encoding-- education
+edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y',
     'high.school',  'professional.course', 'university.degree'])}
 print(edu_mapping)
 bank_data['education']  = bank_data['education'].map(edu_mapping)
 
 # Label encoding pdays
 bank_data['pdays'] = (bank_data['pdays'] >998).astype(int)
+
 
 # Label encoding y(independent variable)
 bank_data['y'].replace(('yes', 'no'), (1, 0), inplace=True)
@@ -165,17 +169,12 @@ X_cat_transformed.shape
 
 pl = ct.named_transformers_['cat']
 ohe = pl.named_steps['ohe']
+# showing the columns name after encoding
 a = ohe.get_feature_names()
 cat_col_names = a.tolist()
 
 
-#%%
-# one_hot_encoded_col = ['x0_admin.','x0_blue-collar','x0_entrepreneur','x0_housemaid','x0_management','x0_retired','x0_self-employed','x0_services','x0_student',
-# 'x0_technician','x0_unemployed','x0_unknown','x1_divorced','x1_married','x1_single','x1_unknown','x2_basic.4y','x2_basic.6y','x2_basic.9y',
-# 'x2_high.school','x2_illiterate','x2_professional.course','x2_university.degree','x2_unknown','x3_no','x3_unknown','x3_yes',
-# 'x4_no','x4_unknown','x4_yes','x5_no','x5_unknown','x5_yes','x6_cellular','x6_telephone','x7_apr','x7_aug','x7_dec','x7_jul',
-# 'x7_jun','x7_mar','x7_may','x7_nov','x7_oct','x7_sep','x8_fri','x8_mon','x8_thu','x8_tue','x8_wed','x9_failure','x9_nonexistent','x9_success']
-ncol_name = cat_col_names + ["age","education","duration","campaign","pdays","previous","emp.var.rate","cons.price.idx", "cons.conf.idx", "euribor3m", "nr.employed", "y"] 
+ncol_name = cat_col_names + ["age","education","duration","campaign","pdays","previous","emp.var.rate","cons.price.idx", "cons.conf.idx", "euribor3m", "nr.employed", "y"]
 bank_data_final = pd.DataFrame(data=X_cat_transformed[:,:],columns=ncol_name)
 
 #%%
@@ -198,21 +197,37 @@ bank_data_final.drop(['x0_unemployed','x1_single','x2_no','x3_no','x4_no','x5_te
 X = bank_data_final.iloc[:, 0:42].values
 y = bank_data_final.iloc[:, 42].values
 
-#drop duration
+# drop duration
 X = np.delete(X, [33], axis=1)
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-#%%
-
-# Feature Scaling
+# Feature Scaling for numerical attributes only
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test = sc.transform(X_test)
-#%%
+X_train[:, np.r_[31, 33:41]] = sc.fit_transform(X_train[:, np.r_[31, 33:41]])
+X_test[:, np.r_[31, 33:41]] = sc.transform(X_test[:, np.r_[31, 33:41]])
+
+# Solving imbalance output problem(accuracy paradox) by oversampling
+print("Number transactions X_train dataset: ", X_train.shape)
+print("Number transactions y_train dataset: ", y_train.shape)
+print("Number transactions X_test dataset: ", X_test.shape)
+print("Number transactions y_test dataset: ", y_test.shape)
+
+print("Before OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
+print("Before OverSampling, counts of label '0': {} \n".format(sum(y_train == 0)))
+
+sm = SMOTE(random_state=2)
+X_train, y_train = sm.fit_sample(X_train, y_train.ravel())
+
+print('After OverSampling, the shape of train_X: {}'.format(X_train.shape))
+print('After OverSampling, the shape of train_y: {} \n'.format(y_train.shape))
+
+print("After OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
+print("After OverSampling, counts of label '0': {}".format(sum(y_train == 0)))
+
 
 # Applying PCA
 from sklearn.decomposition import PCA
@@ -245,7 +260,7 @@ y_pred = classifier.predict(X_test)
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 
-#%%
+
 # Visualising the Training set results
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_train, y_train
@@ -263,6 +278,3 @@ plt.xlabel('KPC1')
 plt.ylabel('KPC2')
 plt.legend()
 plt.show()
-
-
-
