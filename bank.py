@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-
+from sklearn.preprocessing import StandardScaler
 
 import seaborn as sns
 from statsmodels.graphics.mosaicplot import mosaic
@@ -16,7 +16,6 @@ from statsmodels.graphics.mosaicplot import mosaic
 
 bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter=';')
 # bank_data = pd.read_csv(filepath_or_buffer="bank-additional.csv", delimiter=';')
-
 
 
 # Drop rows if these 5 columns contains unknown job	marital	education
@@ -28,16 +27,15 @@ bank_data = bank_data[(bank_data['job'] != 'unknown')
                       & (bank_data['housing'] != 'unknown')
                       & (bank_data['loan'] != 'unknown')] 
 
-#bank_data.to_csv('bank-additional-full(without_Unknown).csv')
+# bank_data.to_csv('bank-additional-full(without_Unknown).csv')
 
 
-#visualization (understanding the data by parts)
+# visualization (understanding the data by parts)
 
 #
-plt.interactive(False)
 g = sns.FacetGrid(bank_data, col='marital' ,row='y')
 g = g.map(sns.distplot, 'age', bins=30)
-plt.subplots_adjust(top=0.4)
+plt.subplots_adjust(top=0.9)
 # g.fig.subplots_adjust(top=0.9)
 g.fig.suptitle('Histogram of Age by Y and marital')
 plt.show()
@@ -120,27 +118,23 @@ plt.subplots_adjust(top=0.9)
 g.fig.suptitle('Pair plot of emp.var.rate, cons.price.idx, cons.conf.idx, euribor3m, nr.employed')
 
 
+# Data Preprocessing-----------------
 
 
-
-#Data Preprocessing
-
-
-#Label encoding Ordinal feature -- education
+# Label encoding Ordinal feature -- education
 edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y', 
     'high.school',  'professional.course', 'university.degree'])}
 print(edu_mapping)
 bank_data['education']  = bank_data['education'].map(edu_mapping)
 
-#Label encoding pdays
+# Label encoding pdays
 bank_data['pdays'] = (bank_data['pdays'] >998).astype(int)
 
-#Label encoding y(independent variable)
+# Label encoding y(independent variable)
 bank_data['y'].replace(('yes', 'no'), (1, 0), inplace=True)
 
 
-
-#One hot encoding and filling in missing values if missing values is present
+# One hot encoding and filling in missing values if missing values is present
 cat_si_step = ('si', SimpleImputer(strategy='constant',fill_value='MISSING'))
 cat_ohe_step = ('ohe', OneHotEncoder(sparse=False,handle_unknown='ignore'))
 cat_steps = [cat_si_step, cat_ohe_step]
@@ -148,7 +142,7 @@ cat_pipe = Pipeline(cat_steps)
 cat_cols = [1,2,4,5,6,7,8,9,14] #removed education
 cat_transformers = [('cat', cat_pipe, cat_cols)]
 
-#remainder should be passthrough so that the numerical columns also included in the result
+# remainder should be passthrough so that the numerical columns also included in the result
 ct = ColumnTransformer(transformers=cat_transformers,remainder='passthrough')
 
 X_cat_transformed = ct.fit_transform(bank_data.iloc[:,:])
@@ -161,8 +155,7 @@ cat_col_names = a.tolist()
 
 
 
-
-#one_hot_encoded_col = ['x0_admin.','x0_blue-collar','x0_entrepreneur','x0_housemaid','x0_management','x0_retired','x0_self-employed','x0_services','x0_student',
+# one_hot_encoded_col = ['x0_admin.','x0_blue-collar','x0_entrepreneur','x0_housemaid','x0_management','x0_retired','x0_self-employed','x0_services','x0_student',
 # 'x0_technician','x0_unemployed','x0_unknown','x1_divorced','x1_married','x1_single','x1_unknown','x2_basic.4y','x2_basic.6y','x2_basic.9y',
 # 'x2_high.school','x2_illiterate','x2_professional.course','x2_university.degree','x2_unknown','x3_no','x3_unknown','x3_yes',
 # 'x4_no','x4_unknown','x4_yes','x5_no','x5_unknown','x5_yes','x6_cellular','x6_telephone','x7_apr','x7_aug','x7_dec','x7_jul',
@@ -171,37 +164,89 @@ ncol_name = cat_col_names + ["age","education","duration","campaign","pdays","pr
 bank_data_final = pd.DataFrame(data=X_cat_transformed[:,:],columns=ncol_name)
 
 
-
-
-#drop columns to prevent dummy variable trap
-#we need to drop 'duration' as suggested in the readme.txt
+# drop columns to prevent dummy variable trap
+# we need to drop 'duration' as suggested in the readme.txt
 bank_data_final.drop(['x0_unemployed','x1_single','x2_no','x3_no','x4_no','x5_telephone','x6_sep','x7_wed','x8_success'],axis = 1,inplace = True)
 
 
+# visualize correlations between columns and ready for machine learning(without feature scaling)
+# bank_data_final_corr = bank_data_final.corr()
+# bank_data_final_corr['y']
+#
+# sns.heatmap(bank_data_final_corr, cmap='coolwarm', linecolor='white', linewidths=1)
+# ax = plt.gca()
+# plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+# ax.set_title('Correlation of the all features and output')
 
 
-#visualize correlations between columns and ready for machine learning
-bank_data_final_corr = bank_data_final.corr()
-bank_data_final_corr['y']
+# Feature Engineering-----------------
+X = bank_data_final.iloc[:, 0:42].values
+y = bank_data_final.iloc[:, 42].values
 
-sns.heatmap(bank_data_final_corr, cmap='coolwarm', linecolor='white', linewidths=1)
-ax = plt.gca()
-plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
-ax.set_title('Correlation of the all features and output')
+#drop duration
+X = np.delete(X, [33], axis=1)
+
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Applying PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components = 2)
+X_train = pca.fit_transform(X_train)
+X_test = pca.transform(X_test)
+explained_variance = pca.explained_variance_ratio_
+
+# Applying LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X_train = lda.fit_transform(X_train, y_train)
+X_test = lda.transform(X_test)
+
+# Applying Kernel PCA
+from sklearn.decomposition import KernelPCA
+kpca = KernelPCA(n_components = 2, kernel = 'rbf')
+X_train = kpca.fit_transform(X_train)
+X_test = kpca.transform(X_test)
+
+# Fitting Logistic Regression to the Training set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+# Visualising the Training set results
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('orange', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title('Logistic Regression (Training set)')
+plt.xlabel('KPC1')
+plt.ylabel('KPC2')
+plt.legend()
+plt.show()
 
 
 
