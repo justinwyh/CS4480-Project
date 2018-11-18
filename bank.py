@@ -118,10 +118,10 @@ plt.subplots_adjust(top=0.9)
 g.fig.suptitle('Pair plot of emp.var.rate, cons.price.idx, cons.conf.idx, euribor3m, nr.employed')
 
 
-# Data Preprocessing-----------------
+# Data Preprocessing(categorical, binary, ordinal encoding)-----------------
 
 
-# Label encoding Ordinal feature -- education
+# Ordinal encoding-- education
 edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y', 
     'high.school',  'professional.course', 'university.degree'])}
 print(edu_mapping)
@@ -129,6 +129,7 @@ bank_data['education']  = bank_data['education'].map(edu_mapping)
 
 # Label encoding pdays
 bank_data['pdays'] = (bank_data['pdays'] >998).astype(int)
+
 
 # Label encoding y(independent variable)
 bank_data['y'].replace(('yes', 'no'), (1, 0), inplace=True)
@@ -150,16 +151,12 @@ X_cat_transformed.shape
 
 pl = ct.named_transformers_['cat']
 ohe = pl.named_steps['ohe']
+# showing the columns name after encoding
 a = ohe.get_feature_names()
 cat_col_names = a.tolist()
 
 
 
-# one_hot_encoded_col = ['x0_admin.','x0_blue-collar','x0_entrepreneur','x0_housemaid','x0_management','x0_retired','x0_self-employed','x0_services','x0_student',
-# 'x0_technician','x0_unemployed','x0_unknown','x1_divorced','x1_married','x1_single','x1_unknown','x2_basic.4y','x2_basic.6y','x2_basic.9y',
-# 'x2_high.school','x2_illiterate','x2_professional.course','x2_university.degree','x2_unknown','x3_no','x3_unknown','x3_yes',
-# 'x4_no','x4_unknown','x4_yes','x5_no','x5_unknown','x5_yes','x6_cellular','x6_telephone','x7_apr','x7_aug','x7_dec','x7_jul',
-# 'x7_jun','x7_mar','x7_may','x7_nov','x7_oct','x7_sep','x8_fri','x8_mon','x8_thu','x8_tue','x8_wed','x9_failure','x9_nonexistent','x9_success']
 ncol_name = cat_col_names + ["age","education","duration","campaign","pdays","previous","emp.var.rate","cons.price.idx", "cons.conf.idx", "euribor3m", "nr.employed", "y"] 
 bank_data_final = pd.DataFrame(data=X_cat_transformed[:,:],columns=ncol_name)
 
@@ -190,11 +187,12 @@ X = np.delete(X, [33], axis=1)
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-# Feature Scaling
+# Feature Scaling for numerical attributes only
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test = sc.transform(X_test)
+X_train[:, np.r_[31, 33:41]] = sc.fit_transform(X_train[:, np.r_[31, 33:41]])
+X_test[:, np.r_[31, 33:41]] = sc.transform(X_test[:, np.r_[31, 33:41]])
+
 
 # Applying PCA
 from sklearn.decomposition import PCA
