@@ -35,7 +35,7 @@ bank_data = bank_data[(bank_data['job'] != 'unknown')
 
 # visualization (understanding the data by parts)
 
-#
+
 g = sns.FacetGrid(bank_data, col='marital' ,row='y')
 g = g.map(sns.distplot, 'age', bins=30)
 plt.subplots_adjust(top=0.9)
@@ -183,7 +183,7 @@ X = bank_data_final.iloc[:, 0:42].values
 y = bank_data_final.iloc[:, 42].values
 
 # drop duration
-X = np.delete(X, [33], axis=1)
+# X = np.delete(X, [33], axis=1)
 
 # Splitting the dataset into the Training set and Test set
 from sklearn.model_selection import train_test_split
@@ -192,8 +192,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 # Feature Scaling for numerical attributes only
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
-X_train[:, np.r_[31, 33:41]] = sc.fit_transform(X_train[:, np.r_[31, 33:41]])
-X_test[:, np.r_[31, 33:41]] = sc.transform(X_test[:, np.r_[31, 33:41]])
+# X_train[:, np.r_[31, 33:41]] = sc.fit_transform(X_train[:, np.r_[31, 33:41]])
+# X_test[:, np.r_[31, 33:41]] = sc.transform(X_test[:, np.r_[31, 33:41]])
+X_train[:, 31:41] = sc.fit_transform(X_train[:, 31:41])
+X_test[:,31:41] = sc.transform(X_test[:, 31:41])
 
 # Solving imbalance output problem(accuracy paradox) by oversampling
 print("Number transactions X_train dataset: ", X_train.shape)
@@ -233,9 +235,9 @@ kpca = KernelPCA(n_components = 2, kernel = 'rbf')
 X_train = kpca.fit_transform(X_train)
 X_test = kpca.transform(X_test)
 
-# Fitting Logistic Regression to the Training set
+# Fitting Logistic Regression to the Training set with weighting
 from sklearn.linear_model import LogisticRegression
-classifier = LogisticRegression(random_state = 0)
+classifier = LogisticRegression(random_state = 0, class_weight={0:0.4, 1:0.6})
 classifier.fit(X_train, y_train)
 
 # Predicting the Test set results
@@ -245,6 +247,20 @@ y_pred = classifier.predict(X_test)
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 
+# Making classification_report
+from sklearn.metrics import classification_report
+print(classification_report(y_test, y_pred))
+
+# Applying k-Fold Cross Validation
+from sklearn.model_selection import cross_val_score
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
+print(accuracies.mean())
+print(accuracies.std())
+
+
+
+
+# Visualize result of training set and test set
 
 # Visualising the Training set results
 from matplotlib.colors import ListedColormap
@@ -264,5 +280,20 @@ plt.ylabel('KPC2')
 plt.legend()
 plt.show()
 
-
-
+# Visualising the Test set results
+from matplotlib.colors import ListedColormap
+X_set, y_set = X_test, y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha = 0.75, cmap = ListedColormap(('red', 'blue')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c = ListedColormap(('red','blue'))(i), label = j)
+plt.title('Logistic Regression (Test set)')
+plt.xlabel('LD1')
+plt.ylabel('LD2')
+plt.legend()
+plt.show()

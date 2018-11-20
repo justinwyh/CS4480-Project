@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="">
+    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="# Solving imbalance output problem(accuracy paradox) by oversampling">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank.py" beforeDir="false" afterPath="$PROJECT_DIR$/bank.py" afterDir="false" />
     </list>
@@ -31,14 +31,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="1" />
-          <entry key="py" value="685" />
+          <entry key="py" value="971" />
           <entry key="txt" value="373" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="373" />
-          <entry key="Python" value="686" />
+          <entry key="Python" value="972" />
         </counts>
       </usages-collector>
     </session>
@@ -48,13 +48,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="243" column="29" lean-forward="true" selection-start-line="243" selection-start-column="29" selection-end-line="243" selection-end-column="29" />
+            <state relative-caret-position="419">
+              <caret line="249" column="30" lean-forward="true" selection-start-line="249" selection-start-column="30" selection-end-line="249" selection-end-column="30" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1542531272702" expanded="false" signature="1282:3595" ph="..." />
-                <marker date="1542531272702" expanded="true" signature="3346:3595" ph="..." />
-                <marker date="1542531272702" expanded="false" signature="5575:5892" ph="..." />
+                <marker date="1542731156992" expanded="false" signature="1282:3594" ph="..." />
+                <marker date="1542731156992" expanded="true" signature="3345:3594" ph="..." />
+                <marker date="1542731156992" expanded="false" signature="5574:5891" ph="..." />
+                <marker date="1542731156992" expanded="false" signature="8933:10581" ph="..." />
               </folding>
             </state>
           </provider>
@@ -107,7 +108,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="python.debugger.dataview.autoresize" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -170,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1542522755189</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="# Solving imbalance output problem(accuracy paradox) by oversampling">
+      <created>1542531942782</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1542531942782</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -180,14 +188,14 @@
       <window_info content_ui="combo" id="Project" order="0" weight="0.24964234" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info active="true" x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" visible="true" weight="0.21816881" />
+      <window_info active="true" x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" visible="true" weight="0.22603719" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.2936803" />
+      <window_info anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.35811648" />
       <window_info anchor="bottom" id="TODO" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32961586" />
@@ -238,18 +246,20 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add PCA LDA KPCA to do dimension reduction&#10;but result of KPCA is bad becoz the model will not predict any yes for y&#10;not sure if PCA and LDA are good but one website(tencent) say they are not that useful for this dataset&#10;&#10;so we may use other features to do feature extraction" />
     <MESSAGE value="add some comments and feature scaling for numerical only" />
-    <option name="LAST_COMMIT_MESSAGE" value="add some comments and feature scaling for numerical only" />
+    <MESSAGE value="# Solving imbalance output problem(accuracy paradox) by oversampling" />
+    <option name="LAST_COMMIT_MESSAGE" value="# Solving imbalance output problem(accuracy paradox) by oversampling" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/bank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="243" column="29" lean-forward="true" selection-start-line="243" selection-start-column="29" selection-end-line="243" selection-end-column="29" />
+        <state relative-caret-position="419">
+          <caret line="249" column="30" lean-forward="true" selection-start-line="249" selection-start-column="30" selection-end-line="249" selection-end-column="30" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1542531272702" expanded="false" signature="1282:3595" ph="..." />
-            <marker date="1542531272702" expanded="true" signature="3346:3595" ph="..." />
-            <marker date="1542531272702" expanded="false" signature="5575:5892" ph="..." />
+            <marker date="1542731156992" expanded="false" signature="1282:3594" ph="..." />
+            <marker date="1542731156992" expanded="true" signature="3345:3594" ph="..." />
+            <marker date="1542731156992" expanded="false" signature="5574:5891" ph="..." />
+            <marker date="1542731156992" expanded="false" signature="8933:10581" ph="..." />
           </folding>
         </state>
       </provider>
