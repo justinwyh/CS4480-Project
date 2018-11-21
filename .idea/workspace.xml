@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="# Solving imbalance output problem(accuracy paradox) by oversampling">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank.py" beforeDir="false" afterPath="$PROJECT_DIR$/bank.py" afterDir="false" />
-    </list>
+    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="# Solving imbalance output problem(accuracy paradox) by oversampling" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +12,9 @@
     <session id="-1388829465">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
     </session>
@@ -48,15 +46,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="249" column="30" lean-forward="true" selection-start-line="249" selection-start-column="30" selection-end-line="249" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-                <marker date="1542731156992" expanded="false" signature="1282:3594" ph="..." />
-                <marker date="1542731156992" expanded="true" signature="3345:3594" ph="..." />
-                <marker date="1542731156992" expanded="false" signature="5574:5891" ph="..." />
-                <marker date="1542731156992" expanded="false" signature="8933:10581" ph="..." />
-              </folding>
+            <state relative-caret-position="281">
+              <caret line="270" column="26" selection-start-line="270" selection-start-column="26" selection-end-line="270" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -188,14 +179,14 @@
       <window_info content_ui="combo" id="Project" order="0" weight="0.24964234" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info active="true" x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" visible="true" weight="0.22603719" />
+      <window_info x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" weight="0.22889842" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.35811648" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.35783133" />
       <window_info anchor="bottom" id="TODO" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32961586" />
@@ -207,7 +198,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="2" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="3" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
-      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" order="5" sideWeight="0.20641282" side_tool="true" weight="0.31688127" />
+      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" order="5" sideWeight="0.20641282" side_tool="true" visible="true" weight="0.35121602" />
       <window_info anchor="right" id="Database" order="6" />
     </layout>
   </component>
@@ -252,15 +243,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/bank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="249" column="30" lean-forward="true" selection-start-line="249" selection-start-column="30" selection-end-line="249" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <marker date="1542731156992" expanded="false" signature="1282:3594" ph="..." />
-            <marker date="1542731156992" expanded="true" signature="3345:3594" ph="..." />
-            <marker date="1542731156992" expanded="false" signature="5574:5891" ph="..." />
-            <marker date="1542731156992" expanded="false" signature="8933:10581" ph="..." />
-          </folding>
+        <state relative-caret-position="281">
+          <caret line="270" column="26" selection-start-line="270" selection-start-column="26" selection-end-line="270" selection-end-column="26" />
         </state>
       </provider>
     </entry>
