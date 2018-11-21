@@ -1,3 +1,4 @@
+
 from sklearn.datasets import make_blobs
 
 from joblib import Parallel, delayed
@@ -141,6 +142,7 @@ X_train = lda.fit_transform(X_train, y_train)
 X_test = lda.transform(X_test)
 
 # #%%
+# # Applying PCA
 # from sklearn.decomposition import PCA
 # pca = PCA(n_components = 2)
 # X_train = pca.fit_transform(X_train)
@@ -148,71 +150,100 @@ X_test = lda.transform(X_test)
 # explained_variance = pca.explained_variance_ratio_
 
 #%%
-class LogisticRegression:
-    def __init__(self, lr=0.01, num_iter=100000, fit_intercept=True, verbose=True):
-        self.lr = lr
-        self.num_iter = num_iter
-        self.fit_intercept = fit_intercept
-        self.verbose = verbose
+class RandomForest():
+    def __init__(self, x, y, n_trees, n_features, sample_sz, depth=10, min_leaf=5):
+        np.random.seed(12)
+        if n_features == 'sqrt':
+            self.n_features = int(np.sqrt(x.shape[1]))
+        elif n_features == 'log2':
+            self.n_features = int(np.log2(x.shape[1]))
+        else:
+            self.n_features = n_features
+        print(self.n_features, "sha: ", x.shape[1])
+        self.x, self.y, self.sample_sz, self.depth, self.min_leaf = x, y, sample_sz, depth, min_leaf
+        self.trees = [self.create_tree() for i in range(n_trees)]
 
-    def __add_intercept(self, X):
-        intercept = np.ones((X.shape[0], 1))
-        return np.concatenate((intercept, X), axis=1)
+    def create_tree(self):
+        idxs = np.random.permutation(len(self.y))[:self.sample_sz]
+        f_idxs = np.random.permutation(self.x.shape[1])[:self.n_features]
+        return DecisionTree(self.x.iloc[idxs], self.y[idxs], self.n_features, f_idxs,
+                            idxs=np.array(range(self.sample_sz)), depth=self.depth, min_leaf=self.min_leaf)
 
-    def __sigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
-
-    def __loss(self, h, y):
-        return (-y * np.log(h) - (1 - y) * np.log(1 - h)).mean()
-
-    def fit_i(self,X,y,i):
-        z = np.dot(X, self.theta)
-        h = self.__sigmoid(z)
-        gradient = np.dot(X.T, (h - y)) / y.size
-        self.theta -= self.lr * gradient
-
-        z = np.dot(X, self.theta)
-        h = self.__sigmoid(z)
-        loss = self.__loss(h, y)
-
-        if (self.verbose == True and i % 10000 == 0):
-            print(f'loss: {loss} \t')
-
-    def fit(self, X, y):
-        if self.fit_intercept:
-            X = self.__add_intercept(X)
-
-        # weights initialization
-        self.theta = np.zeros(X.shape[1])
-        Parallel(n_jobs=8, require='sharedmem')(delayed(self.fit_i)(X, y, i) for i in range(self.num_iter))
-
-        #for i in range(self.num_iter):
-         #   self.fit_i(X,y,i)
+    def predict(self, x):
+        return np.mean([t.predict(x) for t in self.trees], axis=0)
 
 
-    def predict_prob(self, X):
-        if self.fit_intercept:
-            X = self.__add_intercept(X)
+def std_agg(cnt, s1, s2): return np.math.sqrt((s2 / cnt) - (s1 / cnt) ** 2)
 
-        return self.__sigmoid(np.dot(X, self.theta))
 
-    def predict(self, X):
-        return self.predict_prob(X).round() #threshold = 0.5
+class DecisionTree():
+    def __init__(self, x, y, n_features, f_idxs, idxs, depth=10, min_leaf=5):
+        self.x, self.y, self.idxs, self.min_leaf, self.f_idxs = x, y, idxs, min_leaf, f_idxs
+        self.depth = depth
+        print(f_idxs)
+        #         print(self.depth)
+        self.n_features = n_features
+        self.n, self.c = len(idxs), x.shape[1]
+        self.val = np.mean(y[idxs])
+        self.score = float('inf')
+        self.find_varsplit()
 
-model = LogisticRegression(lr=0.1, num_iter=300000)
-tStart = time.time()
-model.fit(X_train,y_train)
-tEnd = time.time()
-print ("It costs " + str(tEnd - tStart) + "sec")
-#%%
-preds = model.predict(X_test)
-print("The accuracy is " + str((preds == y_test).mean()))
-#%%
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, preds)
-model.theta
+    def find_varsplit(self):
+        #for i in self.f_idxs: self.find_better_split(i)
 
-#%%
-# Making classification_report
-from sklearn.metrics import classification_report
-print(classification_report(y_test, preds))
+        if self.is_leaf: return
+        x = self.split_col
+        lhs = np.nonzero(x <= self.split)[0]
+        rhs = np.nonzero(x > self.split)[0]
+        lf_idxs = np.random.permutation(self.x.shape[1])[:self.n_features]
+        rf_idxs = np.random.permutation(self.x.shape[1])[:self.n_features]
+        self.lhs = DecisionTree(self.x, self.y, self.n_features, lf_idxs, self.idxs[lhs], depth=self.depth - 1,
+                                min_leaf=self.min_leaf)
+        self.rhs = DecisionTree(self.x, self.y, self.n_features, rf_idxs, self.idxs[rhs], depth=self.depth - 1,
+                                min_leaf=self.min_leaf)
+
+    def find_better_split(self, var_idx):
+        x, y = self.x.values[self.idxs, var_idx], self.y[self.idxs]
+        sort_idx = np.argsort(x)
+        sort_y, sort_x = y[sort_idx], x[sort_idx]
+        rhs_cnt, rhs_sum, rhs_sum2 = self.n, sort_y.sum(), (sort_y ** 2).sum()
+        lhs_cnt, lhs_sum, lhs_sum2 = 0, 0., 0.
+
+        for i in range(0, self.n - self.min_leaf - 1):
+            xi, yi = sort_x[i], sort_y[i]
+            lhs_cnt += 1;
+            rhs_cnt -= 1
+            lhs_sum += yi;
+            rhs_sum -= yi
+            lhs_sum2 += yi ** 2;
+            rhs_sum2 -= yi ** 2
+            if i < self.min_leaf or xi == sort_x[i + 1]:
+                continue
+
+            lhs_std = std_agg(lhs_cnt, lhs_sum, lhs_sum2)
+            rhs_std = std_agg(rhs_cnt, rhs_sum, rhs_sum2)
+            curr_score = lhs_std * lhs_cnt + rhs_std * rhs_cnt
+            if curr_score < self.score:
+                self.var_idx, self.score, self.split = var_idx, curr_score, xi
+
+    @property
+    def split_name(self):
+        return self.x.columns[self.var_idx]
+
+    @property
+    def split_col(self):
+        return self.x.values[self.idxs, self.var_idx]
+
+    @property
+    def is_leaf(self):
+        return self.score == float('inf') or self.depth <= 0
+
+    def predict(self, x):
+        return np.array([self.predict_row(xi) for xi in x])
+
+    def predict_row(self, xi):
+        if self.is_leaf: return self.val
+        t = self.lhs if xi[self.var_idx] <= self.split else self.rhs
+        return t.predict_row(xi)
+
+    #%%
