@@ -230,6 +230,7 @@ print('After OverSampling, the shape of train_y: {} \n'.format(y_train.shape))
 print("After OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
 print("After OverSampling, counts of label '0': {}".format(sum(y_train == 0)))
 
+# Dimension Reduction (Execute one of three each time)
 
 # Applying PCA
 from sklearn.decomposition import PCA
@@ -250,29 +251,67 @@ kpca = KernelPCA(n_components = 2, kernel = 'rbf')
 X_train = kpca.fit_transform(X_train)
 X_test = kpca.transform(X_test)
 
+# Fitting Models to the training set
+classifier = []
 # Fitting Logistic Regression to the Training set with weighting
 from sklearn.linear_model import LogisticRegression
-classifier = LogisticRegression(random_state = 0, class_weight={0:0.4, 1:0.6})
-classifier.fit(X_train, y_train)
+classifier.append(LogisticRegression(random_state = 0, class_weight={0:0.4, 1:0.6}))
+classifier[0].fit(X_train, y_train)
+
+# Fitting Decision Tree Classification to the Training set
+from sklearn.tree import DecisionTreeClassifier
+classifier.append(DecisionTreeClassifier(criterion = 'entropy', random_state = 0))
+classifier[1].fit(X_train, y_train)
+
+# Fitting Naive Bayes to the Training set
+from sklearn.naive_bayes import GaussianNB
+classifier.append(GaussianNB())
+classifier[2].fit(X_train, y_train)
+
+# Fitting K-NN to the Training set
+# How to choose k
+from sklearn.neighbors import KNeighborsClassifier
+classifier.append(KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2))
+classifier[3].fit(X_train, y_train)
+
+# Fitting SVM to the Training set
+from sklearn.svm import SVC
+classifier.append(SVC(kernel = 'linear', random_state = 0))
+classifier[4].fit(X_train, y_train)
+
+# Fitting Kernel SVM to the Training set
+from sklearn.svm import SVC
+classifier.append(SVC(kernel = 'rbf', random_state = 0))
+classifier[5].fit(X_train, y_train)
+
+# Fitting Random Forest Classification to the Training set
+from sklearn.ensemble import RandomForestClassifier
+classifier.append(RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0))
+classifier[6].fit(X_train, y_train)
 
 # Predicting the Test set results
-y_pred = classifier.predict(X_test)
+y_pred = []
+for x in range(0,7):
+    y_pred.append(classifier[x].predict(X_test))
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
+cm = []
+for x in range(0,7):
+    cm.append(confusion_matrix(y_test, y_pred[x]))
 
 # Making classification_report
 from sklearn.metrics import classification_report
-print(classification_report(y_test, y_pred))
+for x in range(0,7):
+    print(classification_report(y_test, y_pred[x]))
 
 # Applying k-Fold Cross Validation
 from sklearn.model_selection import cross_val_score
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
-print(accuracies.mean())
-print(accuracies.std())
-
-
+for x in range(0,7):
+    accuracies = cross_val_score(estimator = classifier[x], X = X_train, y = y_train[x], cv = 10)
+    print(x)
+    print(accuracies.mean())
+    print(accuracies.std())
 
 
 # Visualize result of training set and test set
@@ -280,35 +319,37 @@ print(accuracies.std())
 # Visualising the Training set results
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_train, y_train
-X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
-                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
-plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
-             alpha = 0.75, cmap = ListedColormap(('orange', 'blue')))
-plt.xlim(X1.min(), X1.max())
-plt.ylim(X2.min(), X2.max())
-for i, j in enumerate(np.unique(y_set)):
-    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
-                c = ListedColormap(('red', 'green'))(i), label = j)
-plt.title('Logistic Regression (Training set)')
-plt.xlabel('KPC1')
-plt.ylabel('KPC2')
-plt.legend()
-plt.show()
+for x in range(0,7):
+    X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                         np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+    plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+                 alpha = 0.75, cmap = ListedColormap(('orange', 'blue')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                    c = ListedColormap(('red', 'green'))(i), label = j)
+    plt.title('Logistic Regression (Training set)')
+    plt.xlabel('KPC1')
+    plt.ylabel('KPC2')
+    plt.legend()
+    plt.show()
 
 # Visualising the Test set results
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_test, y_test
-X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
-                     np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
-plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
-             alpha = 0.75, cmap = ListedColormap(('red', 'blue')))
-plt.xlim(X1.min(), X1.max())
-plt.ylim(X2.min(), X2.max())
-for i, j in enumerate(np.unique(y_set)):
-    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
-                c = ListedColormap(('red','blue'))(i), label = j)
-plt.title('Logistic Regression (Test set)')
-plt.xlabel('LD1')
-plt.ylabel('LD2')
-plt.legend()
-plt.show()
+for x in range(0,7):
+    X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                         np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+    plt.contourf(X1, X2, classifier[x].predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+                 alpha = 0.75, cmap = ListedColormap(('red', 'blue')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                    c = ListedColormap(('red','blue'))(i), label = j)
+    plt.title('Logistic Regression (Test set)')
+    plt.xlabel('LD1')
+    plt.ylabel('LD2')
+    plt.legend()
+    plt.show()

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="# Solving imbalance output problem(accuracy paradox) by oversampling" />
+    <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="using duration&#10;added weight for logistic reg&#10;added classification_report&#10;added k-Fold Cross Validation&#10;added Visualising the Test set results">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank.py" beforeDir="false" afterPath="$PROJECT_DIR$/bank.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,31 +16,41 @@
     <session id="-1388829465">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="1" />
         </counts>
       </usages-collector>
     </session>
     <session id="1761686355">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.4" value="2" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.4" value="3" />
+          <entry key="project.open.time.5" value="1" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="1" />
-          <entry key="py" value="971" />
-          <entry key="txt" value="373" />
+          <entry key="py" value="1627" />
+          <entry key="txt" value="453" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="373" />
-          <entry key="Python" value="972" />
+          <entry key="PLAIN_TEXT" value="453" />
+          <entry key="Python" value="1628" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="gitignore" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Git file" value="3" />
         </counts>
       </usages-collector>
     </session>
@@ -46,8 +60,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="270" column="26" selection-start-line="270" selection-start-column="26" selection-end-line="270" selection-end-column="26" />
+            <state relative-caret-position="366">
+              <caret line="306" lean-forward="true" selection-start-line="306" selection-end-line="306" />
+              <folding>
+                <element signature="e#4#22#0" expanded="true" />
+                <marker date="1542873030915" expanded="false" signature="1293:3659" ph="..." />
+                <marker date="1542873030915" expanded="false" signature="7657:8242" ph="..." />
+                <marker date="1542873030915" expanded="true" signature="8296:9714" ph="..." />
+                <marker date="1542873030915" expanded="true" signature="10470:12275" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -60,6 +81,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/bank.py" />
       </list>
     </option>
@@ -79,7 +101,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -87,10 +108,16 @@
               <item name="CS4480-Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="CS4480-Project" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="CS4480-Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CS4480-Project" type="462c0819:PsiDirectoryNode" />
+              <item name="parallel_logistic" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -169,36 +196,43 @@
       <option name="project" value="LOCAL" />
       <updated>1542531942782</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="using duration&#10;added weight for logistic reg&#10;added classification_report&#10;added k-Fold Cross Validation&#10;added Visualising the Test set results">
+      <created>1542731411990</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1542731411990</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.24964234" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.18669528" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" weight="0.22889842" />
+      <window_info active="true" x="612" y="334" width="429" height="423" id="SciView" order="3" sideWeight="0.79358715" visible="true" weight="0.22603719" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.35783133" />
+      <window_info anchor="bottom" id="Python Console" order="6" sideWeight="0.8277571" visible="true" weight="0.27633208" />
       <window_info anchor="bottom" id="TODO" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32961586" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49928468" weight="0.25774473" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5007153" side_tool="true" weight="0.25774473" />
       <window_info anchor="right" id="R Graphics" order="0" />
       <window_info anchor="right" id="R Packages" order="1" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="2" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="3" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
-      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" order="5" sideWeight="0.20641282" side_tool="true" visible="true" weight="0.35121602" />
+      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" order="5" sideWeight="0.20641282" side_tool="true" weight="0.31688127" />
       <window_info anchor="right" id="Database" order="6" />
     </layout>
   </component>
@@ -238,13 +272,37 @@
     <MESSAGE value="Add PCA LDA KPCA to do dimension reduction&#10;but result of KPCA is bad becoz the model will not predict any yes for y&#10;not sure if PCA and LDA are good but one website(tencent) say they are not that useful for this dataset&#10;&#10;so we may use other features to do feature extraction" />
     <MESSAGE value="add some comments and feature scaling for numerical only" />
     <MESSAGE value="# Solving imbalance output problem(accuracy paradox) by oversampling" />
-    <option name="LAST_COMMIT_MESSAGE" value="# Solving imbalance output problem(accuracy paradox) by oversampling" />
+    <MESSAGE value="using duration&#10;added weight for logistic reg&#10;added classification_report&#10;added k-Fold Cross Validation&#10;added Visualising the Test set results" />
+    <option name="LAST_COMMIT_MESSAGE" value="using duration&#10;added weight for logistic reg&#10;added classification_report&#10;added k-Fold Cross Validation&#10;added Visualising the Test set results" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/parallel_logistic/logistic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="15" selection-start-line="3" selection-start-column="15" selection-end-line="3" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="270" column="26" selection-start-line="270" selection-start-column="26" selection-end-line="270" selection-end-column="26" />
+        <state relative-caret-position="366">
+          <caret line="306" lean-forward="true" selection-start-line="306" selection-end-line="306" />
+          <folding>
+            <element signature="e#4#22#0" expanded="true" />
+            <marker date="1542873030915" expanded="false" signature="1293:3659" ph="..." />
+            <marker date="1542873030915" expanded="false" signature="7657:8242" ph="..." />
+            <marker date="1542873030915" expanded="true" signature="8296:9714" ph="..." />
+            <marker date="1542873030915" expanded="true" signature="10470:12275" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
