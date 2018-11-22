@@ -4,6 +4,7 @@ from sklearn.datasets import make_blobs
 from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
+import math
 import time
 
 #%%
@@ -173,7 +174,7 @@ class RandomForest():
         return np.mean([t.predict(x) for t in self.trees], axis=0)
 
 
-def std_agg(cnt, s1, s2): return np.math.sqrt((s2 / cnt) - (s1 / cnt) ** 2)
+def std_agg(cnt, s1, s2): return math.sqrt((s2 / cnt) - (s1 / cnt) ** 2)
 
 
 class DecisionTree():
@@ -189,8 +190,7 @@ class DecisionTree():
         self.find_varsplit()
 
     def find_varsplit(self):
-        #for i in self.f_idxs: self.find_better_split(i)
-
+        for i in self.f_idxs: self.find_better_split(i)
         if self.is_leaf: return
         x = self.split_col
         lhs = np.nonzero(x <= self.split)[0]
@@ -246,4 +246,19 @@ class DecisionTree():
         t = self.lhs if xi[self.var_idx] <= self.split else self.rhs
         return t.predict_row(xi)
 
-    #%%
+#%%
+tStart = time.time()
+model = RandomForest(pd.DataFrame(X_train),y_train,50,'sqrt',40000)
+tEnd = time.time()
+
+#%%
+preds = model.predict(X_test).round()
+print("The accuracy is " + str((preds == y_test).mean()))
+#%%
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, preds)
+
+#%%
+# Making classification_report
+from sklearn.metrics import classification_report
+print(classification_report(y_test, preds))

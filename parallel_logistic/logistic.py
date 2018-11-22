@@ -199,6 +199,11 @@ class LogisticRegression:
     def predict(self, X):
         return self.predict_prob(X).round() #threshold = 0.5
 
+
+    def score(self):
+        preds = model.predict(X_test)
+        return (preds == y_test).mean()
+
 model = LogisticRegression(lr=0.1, num_iter=300000)
 tStart = time.time()
 model.fit(X_train,y_train)
@@ -216,3 +221,9 @@ model.theta
 # Making classification_report
 from sklearn.metrics import classification_report
 print(classification_report(y_test, preds))
+
+# Applying k-Fold Cross Validation
+from sklearn.model_selection import cross_val_score
+accuracies = cross_val_score(estimator = model, X = X_train, y = y_train, cv = 10)
+print(accuracies.mean())
+print(accuracies.std())
