@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
 bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter=';')
 
 #%%
@@ -117,7 +118,7 @@ g.map_lower(sns.kdeplot)
 plt.subplots_adjust(top=0.9)
 g.fig.suptitle('Pair plot of emp.var.rate, cons.price.idx, cons.conf.idx, euribor3m, nr.employed')
 
-
+#%%
 # Data Preprocessing(categorical, binary, ordinal encoding)-----------------
 # Ordinal encoding-- education
 edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y',
@@ -236,6 +237,7 @@ X_test_LDA = lda.transform(X_test)
 # X_train = kpca.fit_transform(X_train)
 # X_test = kpca.transform(X_test)
 
+#%%
 # Fitting Models to the training set
 classifier = []
 # Fitting Logistic Regression to the Training set with weighting
@@ -243,35 +245,158 @@ from sklearn.linear_model import LogisticRegression
 classifier.append(LogisticRegression(random_state = 0, class_weight={0:0.4, 1:0.6}))
 classifier[0].fit(X_train_LDA, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[0].predict(X_test_LDA))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[0].predict_proba(X_test_LDA)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+
+#%%
 # Fitting Decision Tree Classification to the Training set
 from sklearn.tree import DecisionTreeClassifier
 classifier.append(DecisionTreeClassifier(criterion = 'entropy', random_state = 0))
 classifier[1].fit(X_train, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[1].predict(X_test))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[1].predict_proba(X_test)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Decision Tree Classification (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+
+#%%
 # Fitting Naive Bayes to the Training set
 from sklearn.naive_bayes import GaussianNB
 classifier.append(GaussianNB())
 classifier[2].fit(X_train_LDA, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[2].predict(X_test_LDA))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[2].predict_proba(X_test_LDA)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Naive Bayes Classification (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+#%%
 # Fitting K-NN to the Training set
 from sklearn.neighbors import KNeighborsClassifier
 classifier.append(KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2))
 classifier[3].fit(X_train_LDA, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[3].predict(X_test_LDA))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[3].predict_proba(X_test_LDA)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='K Nearest Neighbours Classification (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+#%%
 # Fitting SVM to the Training set
 from sklearn.svm import SVC
 classifier.append(SVC(kernel = 'linear', random_state = 0))
 classifier[4].fit(X_train_LDA, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[4].predict(X_test_LDA))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[4].predict_proba(X_test_LDA)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Support Vector Machine (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+
+#%%
 # Fitting Kernel SVM to the Training set
 from sklearn.svm import SVC
 classifier.append(SVC(kernel = 'rbf', random_state = 0))
 classifier[5].fit(X_train_LDA, y_train)
 
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[5].predict(X_test_LDA))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[5].predict_proba(X_test_LDA)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Kernel SVM (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
+
+#%%
 # Fitting Random Forest Classification to the Training set
 from sklearn.ensemble import RandomForestClassifier
 classifier.append(RandomForestClassifier(n_estimators = 100, criterion = 'entropy', random_state = 0))
 classifier[6].fit(X_train, y_train)
+
+#%%
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+logit_roc_auc = roc_auc_score(y_test, classifier[6].predict(X_test))
+fpr, tpr, thresholds = roc_curve(y_test, classifier[6].predict_proba(X_test)[:,1])
+plt.figure()
+plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
 
 #%%
 # Fitting Artificial Neural Network to the Training set
@@ -291,6 +416,7 @@ classifier[7].compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics 
 # Fitting the ANN to the Training set
 classifier[7].fit(X_train, y_train, batch_size = 10, epochs = 10)
 
+#%%
 # Predicting the Test set results
 y_pred = []
 y_pred.append(classifier[0].predict(X_test_LDA))
@@ -302,19 +428,19 @@ y_pred.append(classifier[5].predict(X_test_LDA))
 y_pred.append(classifier[6].predict_proba(X_test)[:, 1] > 0.3)
 y_pred.append(classifier[7].predict(X_test) > 0.3)
 
-
+#%%
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = []
 for x in range(0,len(y_pred)):
     cm.append(confusion_matrix(y_test, y_pred[x]))
-
+#%%
 # Making classification_report
 from sklearn.metrics import classification_report
 for x in range(0,len(y_pred)):
     print(x)
     print(classification_report(y_test, y_pred[x]))
-
+#%%
 # Applying k-Fold Cross Validation
 from sklearn.model_selection import cross_val_score
 for x in range(0,len(y_pred)):
@@ -322,3 +448,7 @@ for x in range(0,len(y_pred)):
     print(x)
     print(accuracies.mean())
     print(accuracies.std())
+
+
+
+)
