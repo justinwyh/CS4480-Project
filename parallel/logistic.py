@@ -186,7 +186,8 @@ class LogisticRegression:
 
         # weights initialization
         self.theta = np.zeros(X.shape[1])
-        self.theta = Parallel(n_jobs=1)(delayed(self.fit_i)(X, y, i, self.theta) for i in range(self.num_iter))
+        self.theta = Parallel(n_jobs=5)(delayed(self.fit_i)(X, y, i, self.theta) for i in range(self.num_iter))
+
 
         #for i in range(self.num_iter):
          #   self.fit_i(X,y,i)
