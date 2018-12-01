@@ -184,7 +184,7 @@ class LogisticRegression:
 
         # weights initialization
         self.theta = np.zeros(X.shape[1])
-        Parallel(n_jobs=8, require='sharedmem')(delayed(self.fit_i)(X, y, i) for i in range(self.num_iter))
+        Parallel(n_jobs=6, require='sharedmem')(delayed(self.fit_i)(X, y, i) for i in range(self.num_iter))
 
         #for i in range(self.num_iter):
          #   self.fit_i(X,y,i)
@@ -222,8 +222,3 @@ model.theta
 from sklearn.metrics import classification_report
 print(classification_report(y_test, preds))
 
-# Applying k-Fold Cross Validation
-from sklearn.model_selection import cross_val_score
-accuracies = cross_val_score(estimator = model, X = X_train, y = y_train, cv = 10)
-print(accuracies.mean())
-print(accuracies.std())
