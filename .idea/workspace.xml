@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="394a59b7-d86d-4b34-9bfa-5fb520e826ec" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank.py" beforeDir="false" afterPath="$PROJECT_DIR$/bank.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,14 +21,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="374" />
+          <entry key="py" value="387" />
           <entry key="txt" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="374" />
+          <entry key="Python" value="387" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -89,8 +88,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="331" selection-start-line="331" selection-end-line="331" />
+            <state relative-caret-position="-372">
+              <caret line="337" selection-start-line="337" selection-end-line="337" />
               <folding>
                 <element signature="e#4#22#0" expanded="true" />
               </folding>
@@ -416,8 +415,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="331" selection-start-line="331" selection-end-line="331" />
+        <state relative-caret-position="-372">
+          <caret line="337" selection-start-line="337" selection-end-line="337" />
           <folding>
             <element signature="e#4#22#0" expanded="true" />
           </folding>

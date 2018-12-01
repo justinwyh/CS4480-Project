@@ -332,7 +332,7 @@ plt.show()
 #%%
 # Fitting SVM to the Training set
 from sklearn.svm import SVC
-classifier.append(SVC(kernel = 'linear', random_state = 0))
+classifier.append(SVC(kernel = 'linear', random_state = 0, probability=True))
 classifier[4].fit(X_train_LDA, y_train)
 
 #%%
