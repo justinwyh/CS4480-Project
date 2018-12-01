@@ -3,22 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-#%%
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
-import seaborn as sns
-from statsmodels.graphics.mosaicplot import mosaic
-from sklearn.metrics import precision_recall_curve
-
-#%%
-
 bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter=';')
-# bank_data = pd.read_csv(filepath_or_buffer="bank-additional.csv", delimiter=';')
 
 #%%
 # Drop rows if these 5 columns contains unknown job	marital	education
@@ -30,11 +15,10 @@ bank_data = bank_data[(bank_data['job'] != 'unknown')
                       & (bank_data['housing'] != 'unknown')
                       & (bank_data['loan'] != 'unknown')]
 
-# bank_data.to_csv('bank-additional-full(without_Unknown).csv')
-
 
 # visualization (understanding the data by parts)
-
+import seaborn as sns
+from statsmodels.graphics.mosaicplot import mosaic
 #
 #%%
 g = sns.FacetGrid(bank_data, col='marital' ,row='y')
@@ -135,8 +119,6 @@ g.fig.suptitle('Pair plot of emp.var.rate, cons.price.idx, cons.conf.idx, euribo
 
 
 # Data Preprocessing(categorical, binary, ordinal encoding)-----------------
-
-
 # Ordinal encoding-- education
 edu_mapping = {label:idx for idx, label in enumerate(['illiterate', 'basic.4y', 'basic.6y', 'basic.9y',
     'high.school',  'professional.course', 'university.degree'])}
@@ -146,12 +128,14 @@ bank_data['education']  = bank_data['education'].map(edu_mapping)
 # Label encoding pdays
 bank_data['pdays'] = (bank_data['pdays'] >998).astype(int)
 
-
 # Label encoding y(independent variable)
 bank_data['y'].replace(('yes', 'no'), (1, 0), inplace=True)
 
 #%%
 # One hot encoding and filling in missing values if missing values is present
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 cat_si_step = ('si', SimpleImputer(strategy='constant',fill_value='MISSING'))
 cat_ohe_step = ('ohe', OneHotEncoder(sparse=False,handle_unknown='ignore'))
 cat_steps = [cat_si_step, cat_ohe_step]
@@ -160,6 +144,7 @@ cat_cols = [1,2,4,5,6,7,8,9,14] #removed education
 cat_transformers = [('cat', cat_pipe, cat_cols)]
 
 # remainder should be passthrough so that the numerical columns also included in the result
+from sklearn.compose import ColumnTransformer
 ct = ColumnTransformer(transformers=cat_transformers,remainder='passthrough')
 
 X_cat_transformed = ct.fit_transform(bank_data.iloc[:,:])
@@ -183,13 +168,13 @@ bank_data_final.drop(['x0_unemployed','x1_single','x2_no','x3_no','x4_no','x5_te
 
 #%%
 # visualize correlations between columns and ready for machine learning(without feature scaling)
-# bank_data_final_corr = bank_data_final.corr()
-# bank_data_final_corr['y']
-#
-# sns.heatmap(bank_data_final_corr, cmap='coolwarm', linecolor='white', linewidths=1)
-# ax = plt.gca()
-# plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
-# ax.set_title('Correlation of the all features and output')
+bank_data_final_corr = bank_data_final.corr()
+bank_data_final_corr['y']
+
+sns.heatmap(bank_data_final_corr, cmap='coolwarm', linecolor='white', linewidths=1)
+ax = plt.gca()
+plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+ax.set_title('Correlation of the all features and output')
 
 #%%
 # Feature Engineering-----------------
@@ -220,6 +205,7 @@ print("Number transactions y_test dataset: ", y_test.shape)
 print("Before OverSampling, counts of label '1': {}".format(sum(y_train == 1)))
 print("Before OverSampling, counts of label '0': {} \n".format(sum(y_train == 0)))
 
+from imblearn.over_sampling import SMOTE
 sm = SMOTE(random_state=2)
 X_train, y_train = sm.fit_sample(X_train, y_train.ravel())
 
