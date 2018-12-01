@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 #%%
-from imblearn.over_sampling import SMOTE
-
 bank_data_final = pd.read_csv(filepath_or_buffer="parallel_logistic/bank-additional-full-final.csv", delimiter=',')
 # bank_data = pd.read_csv(filepath_or_buffer="bank-additional.csv", delimiter=';')
 bank_data_final.drop([])
@@ -28,6 +26,7 @@ X_train[:, 31:42] = sc.fit_transform(X_train[:, 31:42])
 X_test[:,31:42] = sc.transform(X_test[:, 31:42])
 
 # Solving imbalance output problem(accuracy paradox) by oversampling
+from imblearn.over_sampling import SMOTE
 sm = SMOTE(random_state=2)
 X_train, y_train = sm.fit_sample(X_train, y_train.ravel())
 
