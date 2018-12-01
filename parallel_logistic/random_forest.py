@@ -191,6 +191,7 @@ class DecisionTree():
 
     def find_varsplit(self):
         for i in self.f_idxs: self.find_better_split(i)
+        #Parallel(n_jobs=3,require='sharedmem')(delayed(self.find_better_split)(i) for i in self.f_idxs)
         if self.is_leaf: return
         x = self.split_col
         lhs = np.nonzero(x <= self.split)[0]
@@ -245,6 +246,8 @@ class DecisionTree():
         if self.is_leaf: return self.val
         t = self.lhs if xi[self.var_idx] <= self.split else self.rhs
         return t.predict_row(xi)
+
+
 
 #%%
 tStart = time.time()
