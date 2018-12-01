@@ -3,7 +3,6 @@ from sklearn.datasets import make_blobs
 from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
-import time
 
 #%%
 from sklearn.compose import ColumnTransformer
@@ -15,11 +14,7 @@ from sklearn.preprocessing import StandardScaler
 
 from imblearn.over_sampling import SMOTE
 
-import seaborn as sns
-import matplotlib.pyplot as plt
-
 #%%
-
 bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter=';')
 # bank_data = pd.read_csv(filepath_or_buffer="bank-additional.csv", delimiter=';')
 
