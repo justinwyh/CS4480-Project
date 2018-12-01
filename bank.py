@@ -273,6 +273,7 @@ from sklearn.ensemble import RandomForestClassifier
 classifier.append(RandomForestClassifier(n_estimators = 100, criterion = 'entropy', random_state = 0))
 classifier[6].fit(X_train, y_train)
 
+#%%
 # Fitting Artificial Neural Network to the Training set
 import keras
 from keras.models import Sequential

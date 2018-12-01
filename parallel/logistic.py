@@ -3,6 +3,7 @@ from sklearn.datasets import make_blobs
 from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
+import time
 
 #%%
 from sklearn.compose import ColumnTransformer
@@ -14,7 +15,11 @@ from sklearn.preprocessing import StandardScaler
 
 from imblearn.over_sampling import SMOTE
 
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 #%%
+
 bank_data = pd.read_csv(filepath_or_buffer="bank-additional-full.csv", delimiter=';')
 # bank_data = pd.read_csv(filepath_or_buffer="bank-additional.csv", delimiter=';')
 
@@ -160,8 +165,8 @@ class LogisticRegression:
     def __loss(self, h, y):
         return (-y * np.log(h) - (1 - y) * np.log(1 - h)).mean()
 
-    def fit_i(self,X,y,i, theta):
-        z = np.dot(X, theta)
+    def fit_i(self,X,y,i):
+        z = np.dot(X, self.theta)
         h = self.__sigmoid(z)
         gradient = np.dot(X.T, (h - y)) / y.size
         self.theta -= self.lr * gradient
@@ -173,16 +178,13 @@ class LogisticRegression:
         if (self.verbose == True and i % 10000 == 0):
             print(f'loss: {loss} \t')
 
-        return self.theta
-
     def fit(self, X, y):
         if self.fit_intercept:
             X = self.__add_intercept(X)
 
-        # weights initialization
-        self.theta = np.zeros(X.shape[1])
-        self.theta = Parallel(n_jobs=5)(delayed(self.fit_i)(X, y, i, self.theta) for i in range(self.num_iter))
-
+            # weights initialization
+            self.theta = np.zeros(X.shape[1])
+            Parallel(n_jobs=1, require='sharedmem')(delayed(self.fit_i)(X, y, i) for i in range(self.num_iter))
 
         #for i in range(self.num_iter):
          #   self.fit_i(X,y,i)
